@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  <h1>Welcome to Natural Life</h1>
+
+  <p>
+    Natural Life is an online education institute where we help students learn
+    practical skills through structured courses, easy lessons, and real-world projects.
+  </p>
+
+  <h3>What we offer</h3>
+  <ul>
+    <li>Short and practical online courses</li>
+    <li>Beginner to advanced learning paths</li>
+    <li>Supportive learning environment</li>
+  </ul>
+
+  <p>
+    Start exploring our courses from the
+    <a href="{% url 'course_list' %}">Courses</a> page.
+  </p>
+
+  <hr>
+
+  {% if user.is_authenticated %}
+    <h2>Account</h2>
+    <p>Welcome, {{ user.username }}!</p>
+
+    {% if user.bio %}
+      <p><b>Bio:</b> {{ user.bio }}</p>
+    {% endif %}
+
+    {% if user.avatar %}
+      <p><img src="{{ user.avatar.url }}" alt="avatar" width="120"></p>
+    {% endif %}
+
+    {# Optional: only if you have this URL/view #}
+    <a href="{% url 'posts:post_create' %}">Create Post</a>
+    <a href="{% url 'posts:post_list' %}">View Posts</a>
+  {% else %}
+    <p>Please login to continue.</p>
+  {% endif %}
+{% endblock %}
