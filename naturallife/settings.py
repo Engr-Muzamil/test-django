@@ -6,24 +6,29 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ----------------------------
-# Security / Debug / Hosts
-# ----------------------------
+
+# -------------------------------------------------
+# Core security / debug / hosts
+# -------------------------------------------------
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
-    "django-insecure-kppf#5=f1f1p1@4cc6t+4a^!p82s*95u(ir)gns158s2w#782#"
+    "django-insecure-change-this-in-production"
 )
 
+# Set DEBUG=1 locally, DEBUG=0 in production
 DEBUG = os.getenv("DEBUG", "1") == "1"
 
-# Comma-separated env: "example.com,localhost,127.0.0.1"
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
-if DEBUG and not ALLOWED_HOSTS:
-    ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+# Set in env like: ALLOWED_HOSTS=127.0.0.1,localhost,.railway.app
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,.railway.app"
+).split(",")
+ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
 
-# ----------------------------
+
+# -------------------------------------------------
 # Applications
-# ----------------------------
+# -------------------------------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -41,14 +46,13 @@ INSTALLED_APPS = [
     "posts",
 ]
 
-# ----------------------------
+
+# -------------------------------------------------
 # Middleware
-# ----------------------------
+# -------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # If you use WhiteNoise in production, uncomment next line and install whitenoise
-    # "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # keep if installed
 
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -56,12 +60,14 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "core.middleware.RequestLogMiddleware",
 ]
 
+
+# -------------------------------------------------
+# URLs / Templates / WSGI
+# -------------------------------------------------
 ROOT_URLCONF = "naturallife.urls"
 
 TEMPLATES = [
@@ -81,9 +87,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "naturallife.wsgi.application"
 
-# ----------------------------
+
+# -------------------------------------------------
 # Database (DATABASE_URL if set, else SQLite)
-# ----------------------------
+# -------------------------------------------------
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
@@ -91,7 +98,7 @@ if DATABASE_URL:
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=False,   # True only if your provider needs it
+            ssl_require=False,
         )
     }
 else:
@@ -102,9 +109,10 @@ else:
         }
     }
 
-# ----------------------------
+
+# -------------------------------------------------
 # Auth / User model
-# ----------------------------
+# -------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"
 
 AUTHENTICATION_BACKENDS = [
@@ -115,9 +123,10 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
 
-# ----------------------------
+
+# -------------------------------------------------
 # Password validation
-# ----------------------------
+# -------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -125,28 +134,32 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ----------------------------
+
+# -------------------------------------------------
 # i18n
-# ----------------------------
+# -------------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ----------------------------
+
+# -------------------------------------------------
 # Static / Media
-# ----------------------------
-STATIC_URL = "static/"
+# -------------------------------------------------
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# If you enable WhiteNoise, uncomment this too:
+# If using WhiteNoise in production, you can enable this:
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# ----------------------------
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# -------------------------------------------------
+# Misc
+# -------------------------------------------------
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
