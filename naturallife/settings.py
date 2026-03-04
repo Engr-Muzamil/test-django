@@ -19,12 +19,14 @@ SECRET_KEY = os.getenv(
 DEBUG = os.getenv("DEBUG", "1") == "1"
 
 # Set in env like: ALLOWED_HOSTS=127.0.0.1,localhost,.railway.app
-ALLOWED_HOSTS = os.getenv(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,.railway.app"
-).split(",")
-ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
-
+ALLOWED_HOSTS = [
+    "welcoming-flexibility-production.up.railway.app",
+    "127.0.0.1",
+    "localhost"
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://welcoming-flexibility-production.up.railway.app"
+]
 
 # -------------------------------------------------
 # Applications
