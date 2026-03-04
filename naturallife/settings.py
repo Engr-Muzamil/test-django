@@ -142,8 +142,14 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
-
-
+ALLOWED_HOSTS = [
+    "welcoming-flexibility-production.up.railway.app",
+    "localhost",
+    "127.0.0.1"
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://welcoming-flexibility-production.up.railway.app"
+]
 # -------------------------------------------------
 # Static / Media
 # -------------------------------------------------
